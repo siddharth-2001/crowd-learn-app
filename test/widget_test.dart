@@ -13,7 +13,7 @@ import 'package:crowd_learn/main.dart';
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget( CrowdLearn());
+    await tester.pumpWidget(const CrowdLearn());
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);

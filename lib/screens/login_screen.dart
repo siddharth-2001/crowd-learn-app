@@ -1,4 +1,5 @@
 // ignore_for_file: prefer_const_constructors
+import 'package:provider/provider.dart';
 
 import 'package:flutter/material.dart';
 import '../widgets/registration.dart';
@@ -14,13 +15,15 @@ class LoginScreen extends StatelessWidget {
         MediaQuery.of(context).viewPadding.top -
         MediaQuery.of(context).viewPadding.bottom;
 
+    final theme = Theme.of(context);
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
-            color: Colors.blue,
+            color: theme.primaryColor,
             height: height * 0.25,
           ),
           Expanded(child: RegisterForm()),

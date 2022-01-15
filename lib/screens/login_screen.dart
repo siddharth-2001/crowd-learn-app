@@ -1,6 +1,3 @@
-// ignore_for_file: prefer_const_constructors
-import 'package:provider/provider.dart';
-
 import 'package:flutter/material.dart';
 import '../widgets/registration.dart';
 
@@ -26,8 +23,8 @@ class LoginScreen extends StatelessWidget {
             color: theme.primaryColor,
             height: height * 0.25,
           ),
-          Expanded(child: RegisterForm()),
-          Padding(padding: EdgeInsets.symmetric(vertical: 24))
+         const Expanded(child: RegisterForm()),
+         const Padding(padding: EdgeInsets.symmetric(vertical: 24))
         ],
       ),
     );

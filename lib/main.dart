@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import './provider/user.dart';
 import './screens/login_screen.dart';
 import './screens/otp_screen.dart';
+import './screens/home_screen.dart';
 
 void main() => runApp(const CrowdLearn());
 
@@ -30,6 +31,7 @@ class CrowdLearn extends StatelessWidget {
           )),
       initialRoute: LoginScreen.routeName,
       routes: {
+        HomeScreen.routeName : (context) => HomeScreen(),
         LoginScreen.routeName: (context) => LoginScreen(),
         OtpScreen.routeName: (context) => OtpScreen(),
       },

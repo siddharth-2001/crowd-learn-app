@@ -16,7 +16,7 @@ class HomeScreen extends StatelessWidget {
 
     return Scaffold(
       body: Center(
-        child: Text("You have logged in with email ${auth.getEmail()}"),
+        child: Text("You have logged in with email ${auth.email}"),
       ),
     );
   }

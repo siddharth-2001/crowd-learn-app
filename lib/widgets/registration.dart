@@ -39,14 +39,14 @@ class _RegisterFormState extends State<RegisterForm> {
     }
     _form.currentState!.save();
 
-    user.register(data["email"], data["username"]).then((value) {
+    user.register(data["email"]!, data["username"]!).then((value) {
       setState(() {
         _isLoading = false;
       });
 
       if (value != 200) {
         ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text("Some error occured.")));
+            .showSnackBar(SnackBar(content: Text(value.toString())));
       } else {
         Navigator.pushNamed(context, OtpScreen.routeName);
       }
@@ -97,6 +97,9 @@ class _RegisterFormState extends State<RegisterForm> {
                         TextFormField(
                           decoration:
                               const InputDecoration(labelText: "Username"),
+                          onSaved: (value) {
+                            data["username"] = value!;
+                          },
                         ),
                     ],
                   ),

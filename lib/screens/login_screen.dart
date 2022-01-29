@@ -16,11 +16,12 @@ class LoginScreen extends StatelessWidget {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
+      backgroundColor: theme.colorScheme.background,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
-            color: theme.primaryColor,
+            color: theme.colorScheme.primary,
             height: height * 0.25,
           ),
          const Expanded(child: RegisterForm()),

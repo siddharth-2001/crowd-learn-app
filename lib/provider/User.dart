@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -10,8 +11,27 @@ class User extends ChangeNotifier {
   String _token = "";
   String _otp = "";
 
-  bool isAuth() {
-    if (_token != "") return false;
+  Future<bool> tryAutoLogin() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    if (!prefs.containsKey("token")) {
+      return false;
+    } else if (prefs.getString("token") == "") {
+      return false;
+    }
+
+    //fetch and set data on disk
+    _token = prefs.getString("token")!;
+    _email = prefs.getString("email")!;
+    _username = prefs.getString("username")!;
+
+    notifyListeners();
+
+    return true;
+  }
+
+  get isAuth {
+    if (_token == "") return false;
     return true;
   }
 
@@ -23,6 +43,22 @@ class User extends ChangeNotifier {
   get username {
     String res = _username.toString();
     return res;
+  }
+
+  Future<void> saveDisk() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("email", _email);
+    prefs.setString("token", _token);
+    prefs.setString("username", _username);
+  }
+
+  Future<void> logout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.clear();
+    _email = "";
+    _username = "";
+    _otp = "";
+    _token = "";
   }
 
   Future<bool> checkOtp(String inputOtp) async {
@@ -40,7 +76,9 @@ class User extends ChangeNotifier {
         headers: requestHeaders,
       );
 
-      if (response.statusCode > 200) return false;
+      if (response.statusCode >= 300) return false;
+
+      saveDisk();
 
       return true;
     }
@@ -63,13 +101,45 @@ class User extends ChangeNotifier {
         }),
         headers: requestHeaders);
 
-    log(response.body);
-
-    if (response.statusCode > 200) return response.statusCode;
+    if (response.statusCode >= 300) return response.statusCode;
 
     final resBody = json.decode(response.body);
+
     _otp = resBody["otp"];
     _token = resBody["token"];
+    _username = resBody["user"];
+
+    return response.statusCode;
+  }
+
+  Future<int> login(String userEmail) async {
+    final url = Uri.parse("http://crowd-learn.herokuapp.com/login/");
+
+    //map for headers for the api
+    Map<String, String> requestHeaders = {
+      'Content-type': 'application/json',
+      'Accept': 'application/json',
+    };
+
+    final http.Response response = await http.post(
+      url,
+      body: json.encode({"email": userEmail}),
+      headers: requestHeaders,
+    );
+
+    final Map<dynamic, dynamic> resBody =
+        json.decode(response.body) as Map<dynamic, dynamic>;
+
+    log(resBody.toString());
+
+    Map<dynamic, dynamic> userData = resBody["user"];
+
+    if (response.statusCode == 200) {
+      _token = resBody["token"];
+      _otp = resBody["otp"];
+      _username = userData["username"];
+      _email = userEmail;
+    }
 
     return response.statusCode;
   }
@@ -77,11 +147,13 @@ class User extends ChangeNotifier {
   Future<int> register(String userEmail, String userName) async {
     final url = Uri.parse("http://crowd-learn.herokuapp.com/register/");
 
+    //map for headers for the api
     Map<String, String> requestHeaders = {
       'Content-type': 'application/json',
       'Accept': 'application/json',
     };
 
+    //create map to send data
     Map<String, String> body = {
       "email": userEmail,
       "username": userName,
@@ -89,9 +161,9 @@ class User extends ChangeNotifier {
 
     var response =
         await http.post(url, headers: requestHeaders, body: json.encode(body));
-    log(response.body);
 
-    if (response.statusCode >= 200) {
+    if (response.statusCode == 201) {
+      //set user data for current session
       _token = json.decode(response.body)["token"];
       _otp = json.decode(response.body)["otp"];
       _email = userEmail;
@@ -99,6 +171,9 @@ class User extends ChangeNotifier {
 
       notifyListeners();
     }
+
+    log("${response.statusCode}");
+
     return response.statusCode;
   }
 }

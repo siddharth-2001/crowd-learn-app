@@ -1,6 +1,5 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 import 'package:provider/provider.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
 //local
 import './provider/user.dart';
@@ -15,33 +14,45 @@ class CrowdLearn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(providers: [
-      ChangeNotifierProvider(create: (context)=> User()),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => User()),
+      ],
+      child: Consumer<User>(
+        builder: (context, value, child) {
 
-    ],
-    child: Consumer<User>(builder: (context, value, child) {
-      return MaterialApp(
-      theme: ThemeData(
-          primarySwatch: Colors.blue,
-          // colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.green),
-          textButtonTheme: TextButtonThemeData(style: ButtonStyle()),
-          inputDecorationTheme: InputDecorationTheme(
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
-            contentPadding: EdgeInsets.symmetric(horizontal: 24),
-          )),
-      initialRoute: LoginScreen.routeName,
-      routes: {
-        HomeScreen.routeName : (context) => HomeScreen(),
-        LoginScreen.routeName: (context) => LoginScreen(),
-        OtpScreen.routeName: (context) => OtpScreen(),
-      },
+          return MaterialApp(
+            theme: ThemeData(
+                // primaryColor: Colors.greenAccent.shade100,
+                colorScheme: ColorScheme.light(
+                  primary: Colors.deepPurple.shade400,
+                  background: Colors.deepPurple.shade50,
+                  secondary: Colors.blue,
+
+
+                ),
+                textTheme: TextTheme(
+                  headline5: GoogleFonts.robotoCondensed(
+
+                  ),
+                ),
+                textButtonTheme:
+                    const TextButtonThemeData(style: ButtonStyle()),
+                inputDecorationTheme: InputDecorationTheme(
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(50)),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+                )),
+            initialRoute:
+               HomeScreen.routeName,
+            routes: {
+              HomeScreen.routeName: (context) => const HomeScreen(),
+              LoginScreen.routeName: (context) => const LoginScreen(),
+              OtpScreen.routeName: (context) => const OtpScreen(),
+            },
+          );
+        },
+      ),
     );
-
-      
-    },),
-    
-    );
-
-   
   }
 }

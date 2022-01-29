@@ -14,7 +14,7 @@ class RegisterForm extends StatefulWidget {
 }
 
 Widget putHeadline(BuildContext context, String g) {
-  return Text(g, style: Theme.of(context).textTheme.headline6);
+  return Text(g, style: Theme.of(context).textTheme.headline5);
 }
 
 class _RegisterFormState extends State<RegisterForm> {
@@ -39,18 +39,33 @@ class _RegisterFormState extends State<RegisterForm> {
     }
     _form.currentState!.save();
 
-    user.register(data["email"]!, data["username"]!).then((value) {
-      setState(() {
-        _isLoading = false;
-      });
+    if (_currMode == mode.login) {
+      user.login(data["email"]!).then((value) {
+        setState(() {
+          _isLoading = false;
+        });
 
-      if (value != 200) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(value.toString())));
-      } else {
-        Navigator.pushNamed(context, OtpScreen.routeName);
-      }
-    });
+        if (value != 200) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(value.toString())));
+        } else {
+          Navigator.pushNamed(context, OtpScreen.routeName);
+        }
+      });
+    } else {
+      user.register(data["email"]!, data["username"]!).then((value) {
+        setState(() {
+          _isLoading = false;
+        });
+
+        if (value != 201) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(value.toString())));
+        } else {
+          Navigator.pushNamed(context, OtpScreen.routeName);
+        }
+      });
+    }
   }
 
   @override

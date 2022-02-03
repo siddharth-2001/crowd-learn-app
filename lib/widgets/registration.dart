@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 //local
@@ -126,6 +128,7 @@ class _RegisterFormState extends State<RegisterForm> {
                         height: 48,
                         child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
+                    
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(50))),
                             onPressed: () {
@@ -135,17 +138,27 @@ class _RegisterFormState extends State<RegisterForm> {
                                 ? const Text("Login")
                                 : const Text("Register")),
                       ),
-                      TextButton(
-                          onPressed: () {
-                            setState(() {
-                              _currMode == mode.login
-                                  ? _currMode = mode.register
-                                  : _currMode = mode.login;
-                            });
-                          },
-                          child: _currMode == mode.register
-                              ? const Text("Sign In")
-                              : const Text("Register"))
+                      SizedBox(
+                        height: 8,
+                      ),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 48,
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50))
+                          ),
+                            onPressed: () {
+                              setState(() {
+                                _currMode == mode.login
+                                    ? _currMode = mode.register
+                                    : _currMode = mode.login;
+                              });
+                            },
+                            child: _currMode == mode.register
+                                ? const Text("Sign In")
+                                : const Text("Register")),
+                      )
                     ],
                   ),
                 ],

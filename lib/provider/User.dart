@@ -1,6 +1,6 @@
 import 'dart:developer';
 import 'package:shared_preferences/shared_preferences.dart';
-
+//import
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -45,6 +45,11 @@ class User extends ChangeNotifier {
     return res;
   }
 
+  get token {
+    String tok = _token.toString();
+    return tok;
+  }
+
   Future<void> saveDisk() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("email", _email);
@@ -63,7 +68,7 @@ class User extends ChangeNotifier {
 
   Future<bool> checkOtp(String inputOtp) async {
     final url =
-        Uri.parse("https://crowd-learn.herokuapp.com/verifyuser/$_email");
+        Uri.parse("https://crowd-learn.herokuapp.com/auth/verifyuser/$_email");
 
     Map<String, String> requestHeaders = {
       'Content-type': 'application/json',
@@ -87,7 +92,7 @@ class User extends ChangeNotifier {
   }
 
   Future<int> retryOtp() async {
-    final url = Uri.parse("https://crowd-learn.herokuapp.com/resendotp/");
+    final url = Uri.parse("https://crowd-learn.herokuapp.com/auth/resendotp/");
 
     Map<String, String> requestHeaders = {
       'Content-type': 'application/json',
@@ -101,6 +106,8 @@ class User extends ChangeNotifier {
         }),
         headers: requestHeaders);
 
+    log(response.body);
+
     if (response.statusCode >= 300) return response.statusCode;
 
     final resBody = json.decode(response.body);
@@ -113,7 +120,7 @@ class User extends ChangeNotifier {
   }
 
   Future<int> login(String userEmail) async {
-    final url = Uri.parse("http://crowd-learn.herokuapp.com/login/");
+    final url = Uri.parse("http://crowd-learn.herokuapp.com/auth/login/");
 
     //map for headers for the api
     Map<String, String> requestHeaders = {
@@ -145,7 +152,7 @@ class User extends ChangeNotifier {
   }
 
   Future<int> register(String userEmail, String userName) async {
-    final url = Uri.parse("http://crowd-learn.herokuapp.com/register/");
+    final url = Uri.parse("http://crowd-learn.herokuapp.com/auth/register/");
 
     //map for headers for the api
     Map<String, String> requestHeaders = {
@@ -171,8 +178,6 @@ class User extends ChangeNotifier {
 
       notifyListeners();
     }
-
-    log("${response.statusCode}");
 
     return response.statusCode;
   }
